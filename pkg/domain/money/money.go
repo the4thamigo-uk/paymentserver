@@ -72,3 +72,7 @@ func (m Money) String() string {
 	}
 	return f.Format(m.m.Amount())
 }
+
+func (m Money) Currency() string {
+	return m.m.Currency().Code
+}

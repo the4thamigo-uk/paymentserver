@@ -109,3 +109,8 @@ func TestMoney_IsNegativeError(t *testing.T) {
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Equal(t, zero, m)
 }
+
+func TestMoney_Currency(t *testing.T) {
+	m := MustParse("123.45", "GBP")
+	assert.Equal(t, "GBP", m.Currency())
+}

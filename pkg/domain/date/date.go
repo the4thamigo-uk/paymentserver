@@ -21,6 +21,16 @@ func Parse(s string) (Date, error) {
 	return Date(t), nil
 }
 
+// MustParse returns a valid Date or otherwise panics
+// Use for testing only
+func MustParse(s string) Date {
+	d, err := Parse(s)
+	if err != nil {
+		panic(err)
+	}
+	return d
+}
+
 // String returns the data in the standard format
 func (d *Date) String() string {
 	return time.Time(*d).Format(layout)

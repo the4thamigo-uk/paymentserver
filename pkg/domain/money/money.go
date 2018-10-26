@@ -2,6 +2,7 @@ package money
 
 import (
 	gomoney "github.com/Rhymond/go-money"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 	"strconv"
 	"strings"
 )
@@ -73,6 +74,6 @@ func (m Money) String() string {
 	return f.Format(m.m.Amount())
 }
 
-func (m Money) Currency() string {
-	return m.m.Currency().Code
+func (m Money) Currency() currency.Currency {
+	return currency.Currency(m.m.Currency().Code)
 }

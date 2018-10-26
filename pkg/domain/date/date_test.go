@@ -15,7 +15,7 @@ func TestData_MustParse(t *testing.T) {
 func TestData_MustParsePanics(t *testing.T) {
 	defer func() {
 		if err := recover(); err != nil {
-			require.NotNil(t, err.(ErrDateParse))
+			require.NotNil(t, err.(ErrParseDate))
 		}
 	}()
 	_ = MustParse("NOTVALID")
@@ -29,7 +29,7 @@ func TestDate_Parse(t *testing.T) {
 
 func TestDate_ParseError(t *testing.T) {
 	d, err := Parse("NOTVALID")
-	require.NotNil(t, err.(ErrDateParse))
+	require.NotNil(t, err.(ErrParseDate))
 	assert.Equal(t, zero, d)
 }
 
@@ -50,11 +50,11 @@ func TestDate_Unmarshal(t *testing.T) {
 func TestDate_UnmarshalError(t *testing.T) {
 	var d Date
 	err := json.Unmarshal([]byte(`"NOTVALID"`), &d)
-	require.NotNil(t, err.(ErrDateParse))
+	require.NotNil(t, err.(ErrParseDate))
 }
 
 func TestDate_UnmarshalErrorNotString(t *testing.T) {
 	var d Date
 	err := json.Unmarshal([]byte("{"), &d)
-	require.NotNil(t, err.(ErrDateParse))
+	require.NotNil(t, err.(ErrParseDate))
 }

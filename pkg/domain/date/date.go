@@ -16,7 +16,7 @@ var zero = Date(time.Time{})
 func Parse(s string) (Date, error) {
 	t, err := time.Parse(layout, s)
 	if err != nil {
-		return zero, errDateParse(err, s)
+		return zero, errParseDate(err, s)
 	}
 	return Date(t), nil
 }
@@ -45,7 +45,7 @@ func (d Date) MarshalJSON() ([]byte, error) {
 func (d *Date) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
-		return errDateParse(err, string(data))
+		return errParseDate(err, string(data))
 	}
 	d2, err := Parse(s)
 	if err != nil {

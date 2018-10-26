@@ -48,6 +48,16 @@ func Parse(amt string, ccy string) (Money, error) {
 	}, nil
 }
 
+// MustParse returns a valid Money or otherwise panics
+// Use for testing only
+func MustParse(amt string, ccy string) Money {
+	m, err := Parse(amt, ccy)
+	if err != nil {
+		panic(err)
+	}
+	return m
+}
+
 // String returns the string representation of the Money object
 func (m Money) String() string {
 	c := m.m.Currency()

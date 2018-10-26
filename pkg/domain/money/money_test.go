@@ -6,6 +6,20 @@ import (
 	"testing"
 )
 
+func TestMoney_MustParse(t *testing.T) {
+	m := MustParse("123.45", "GBP")
+	assert.Equal(t, "123.45", m.String())
+}
+
+func TestMoney_MustParsePanics(t *testing.T) {
+	defer func() {
+		if err := recover(); err != nil {
+			require.NotNil(t, err.(ErrParseAmount))
+		}
+	}()
+	_ = MustParse("", "GBP")
+}
+
 func TestMoney_InvalidCurrencyError(t *testing.T) {
 	m, err := Parse("", "XXX")
 	require.NotNil(t, err.(ErrCurrencyNotFound))

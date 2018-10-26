@@ -11,7 +11,7 @@ type Account struct {
 	Name    string
 	Address string
 	Type    *int
-	bankID  bank.Identifier
+	BankID  bank.Identifier
 }
 
 // Validate performs some basic checks on the validity of the Account
@@ -20,7 +20,7 @@ func (a Account) Validate() error {
 	if err != nil {
 		return errNotValid(err, a.ID)
 	}
-	err = a.bankID.Validate()
+	err = a.BankID.Validate()
 	if err != nil {
 		return errNotValid(err, a.ID)
 	}

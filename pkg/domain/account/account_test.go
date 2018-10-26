@@ -15,7 +15,7 @@ func newTest() Account {
 		Name:    "John Smith",
 		Address: "1 Test Street",
 		Type:    &accType,
-		bankID: bank.Identifier{
+		BankID: bank.Identifier{
 			ID:   "403000",
 			Code: bank.GBDSC},
 	}
@@ -57,7 +57,7 @@ func Test_ValidateNoAddressError(t *testing.T) {
 
 func Test_ValidateNoBankIdError(t *testing.T) {
 	a := newTest()
-	a.bankID.ID = ""
+	a.BankID.ID = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))
 }

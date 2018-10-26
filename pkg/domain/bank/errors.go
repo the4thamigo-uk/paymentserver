@@ -15,5 +15,5 @@ func errCodeNotValid(code string) ErrCodeNotValid {
 type ErrBankIDNotValid error
 
 func errBankIDNotValid(err error, id Identifier) ErrBankIDNotValid {
-	return ErrBankIDNotValid(errors.Wrapf(err, "The bank id '%s' is not a valid '%s'", id.ID, id.Code))
+	return ErrBankIDNotValid(errors.Wrapf(err, "The bank id '%s' is not a valid '%v'", id.ID, id.Code))
 }

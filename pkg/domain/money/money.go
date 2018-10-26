@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Money defines an amount of a specified currency
 type Money struct {
 	m *gomoney.Money
 }
@@ -42,8 +43,6 @@ func Parse(amt string, ccy string) (Money, error) {
 	if err != nil {
 		return zero, errParseAmount(amt, ccy)
 	}
-	m := gomoney.New(n, ccy)
-	c = m.Currency()
 	return Money{
 		m: gomoney.New(n, ccy),
 	}, nil

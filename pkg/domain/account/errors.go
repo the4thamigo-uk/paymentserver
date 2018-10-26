@@ -15,12 +15,12 @@ func errCodeNotValid(code string) ErrCodeNotValid {
 type ErrIDNotValid error
 
 func errIDNotValid(err error, id Identifier) ErrIDNotValid {
-	return ErrIDNotValid(errors.Wrapf(err, "The account number '%s' is not a valid '%s'", id.Number, id.Code))
+	return ErrIDNotValid(errors.Wrapf(err, "The account number '%s' is not a valid '%v'", id.Number, id.Code))
 }
 
 // ErrNotValid indicates that the account is incorrect
 type ErrNotValid error
 
 func errNotValid(err error, id Identifier) ErrNotValid {
-	return ErrNotValid(errors.Wrapf(err, "The account '%s' is not valid '%s'", id.Number))
+	return ErrNotValid(errors.Wrapf(err, "The account '%s' is not valid", id.Number))
 }

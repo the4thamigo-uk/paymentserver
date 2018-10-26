@@ -13,10 +13,11 @@ func TestCode_ToString(t *testing.T) {
 }
 
 func TestCode_BBANFromString(t *testing.T) {
-	code, err := ToCode("GBDSC")
+	code, err := Parse("GBDSC")
 	require.Nil(t, err)
 	assert.Equal(t, GBDSC, *code)
 }
+
 func TestCode_Marshal(t *testing.T) {
 	code := GBDSC
 	b, err := json.Marshal(code)

@@ -13,7 +13,7 @@ func TestCode_BBANToString(t *testing.T) {
 }
 
 func TestCode_BBANFromString(t *testing.T) {
-	code, err := ToCode("BBAN")
+	code, err := Parse("BBAN")
 	require.Nil(t, err)
 	assert.Equal(t, BBAN, *code)
 }

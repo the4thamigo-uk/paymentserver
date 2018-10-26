@@ -30,8 +30,8 @@ func (c *Code) String() string {
 	return codesToStr[*c]
 }
 
-// ToCode attempts to read a code from a string
-func ToCode(s string) (*Code, error) {
+// Parse attempts to read a code from a string
+func Parse(s string) (*Code, error) {
 	c, ok := codesFromStr[s]
 	if !ok {
 		return nil, errCodeNotValid(s)
@@ -50,7 +50,7 @@ func (c *Code) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return errCodeNotValid(string(data))
 	}
-	c2, err := ToCode(s)
+	c2, err := Parse(s)
 	if err != nil {
 		return err
 	}

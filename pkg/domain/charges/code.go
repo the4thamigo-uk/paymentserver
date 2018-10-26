@@ -8,10 +8,14 @@ import (
 type Code int
 
 const (
+	// SHAR indicates charges are shared between the debtor and the beneficiary
 	SHAR Code = iota
+	// CRED indicates charges are borne by the beneficiary/creditor
 	CRED
+	// DEBT indicates charges are borne by the debtor
 	DEBT
-	SLEV
+	// SLEV special code for SEPA credit transfers (not sure this is relevant
+	//SLEV
 )
 
 var (
@@ -19,7 +23,7 @@ var (
 		SHAR: "SHAR",
 		CRED: "CRED",
 		DEBT: "DEBT",
-		SLEV: "SLEV",
+		//SLEV: "SLEV",
 	}
 	codesFromStr = map[string]Code{}
 )

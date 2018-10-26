@@ -3,10 +3,10 @@ go:
   - 1.x
 
 install:
+  - go get -t ./...
   - go get -u golang.org/x/lint/golint
   - go get github.com/modocache/gover
   - go get github.com/mattn/goveralls
-  - go get github.com/stretchr/testify/assert
   - go get github.com/gordonklaus/ineffassign
   - go get github.com/fzipp/gocyclo
   - go get honnef.co/go/tools/cmd/megacheck

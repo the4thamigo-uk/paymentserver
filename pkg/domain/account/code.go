@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 )
 
+// Code defines a bank account code type type Code int
 type Code int
 
 const (
+	// IBAN is an International Bank Account Number
 	IBAN Code = iota
+	// BBAN is a Basic Bank Account Number
 	BBAN
 )
 
@@ -25,10 +28,12 @@ func init() {
 	}
 }
 
+// String returns a string representation of the Code
 func (c *Code) String() string {
 	return codesToStr[*c]
 }
 
+// ToCode attempts to parse a Code from a string
 func ToCode(s string) (*Code, error) {
 	c, ok := codesFromStr[s]
 	if !ok {

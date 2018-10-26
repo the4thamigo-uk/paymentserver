@@ -9,14 +9,14 @@ import (
 func newTest() Account {
 	accType := 0
 	return Account{
-		Id: Identifier{
+		ID: Identifier{
 			Number: "GB82WEST12345698765432",
 			Code:   IBAN},
 		Name:    "John Smith",
 		Address: "1 Test Street",
 		Type:    &accType,
-		bankId: bank.Identifier{
-			Id:   "403000",
+		bankID: bank.Identifier{
+			ID:   "403000",
 			Code: bank.GBDSC},
 	}
 }
@@ -36,7 +36,7 @@ func Test_ValidateNilType(t *testing.T) {
 
 func Test_ValidateNoNumberError(t *testing.T) {
 	a := newTest()
-	a.Id.Number = ""
+	a.ID.Number = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))
 }
@@ -57,7 +57,7 @@ func Test_ValidateNoAddressError(t *testing.T) {
 
 func Test_ValidateNoBankIdError(t *testing.T) {
 	a := newTest()
-	a.bankId.Id = ""
+	a.bankID.ID = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))
 }

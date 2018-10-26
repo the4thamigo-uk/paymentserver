@@ -11,11 +11,11 @@ func errCodeNotValid(code string) ErrCodeNotValid {
 	return ErrCodeNotValid(errors.Errorf("The account code '%s' is not a valid", code))
 }
 
-// ErrIdNotValid indicates that the account identifier is incorrect
-type ErrIdNotValid error
+// ErrIDNotValid indicates that the account identifier is incorrect
+type ErrIDNotValid error
 
-func errIdNotValid(err error, id Identifier) ErrIdNotValid {
-	return ErrIdNotValid(errors.Wrapf(err, "The account number '%s' is not a valid '%s'", id.Number, id.Code))
+func errIDNotValid(err error, id Identifier) ErrIDNotValid {
+	return ErrIDNotValid(errors.Wrapf(err, "The account number '%s' is not a valid '%s'", id.Number, id.Code))
 }
 
 // ErrNotValid indicates that the account is incorrect

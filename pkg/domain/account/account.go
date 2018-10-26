@@ -5,28 +5,30 @@ import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/bank"
 )
 
+// Account defines a bank account
 type Account struct {
-	Id      Identifier
+	ID      Identifier
 	Name    string
 	Address string
 	Type    *int
-	bankId  bank.Identifier
+	bankID  bank.Identifier
 }
 
+// Validate performs some basic checks on the validity of the Account
 func (a Account) Validate() error {
-	err := a.Id.Validate()
+	err := a.ID.Validate()
 	if err != nil {
-		return errNotValid(err, a.Id)
+		return errNotValid(err, a.ID)
 	}
-	err = a.bankId.Validate()
+	err = a.bankID.Validate()
 	if err != nil {
-		return errNotValid(err, a.Id)
+		return errNotValid(err, a.ID)
 	}
 	if a.Name == "" {
-		return errNotValid(errors.New("Name is blank"), a.Id)
+		return errNotValid(errors.New("Name is blank"), a.ID)
 	}
 	if a.Address == "" {
-		return errNotValid(errors.New("Name is blank"), a.Id)
+		return errNotValid(errors.New("Name is blank"), a.ID)
 	}
 	return nil
 }

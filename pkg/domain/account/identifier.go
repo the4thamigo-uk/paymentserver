@@ -5,6 +5,7 @@ import (
 	"github.com/go-pascal/iban"
 )
 
+// Identifier defines a bank account number in a format compatible with the Code
 type Identifier struct {
 	Number string
 	Code   Code
@@ -15,10 +16,10 @@ type Identifier struct {
 func (id Identifier) Validate() error {
 	if id.Code == IBAN {
 		_, err := iban.NewIBAN(id.Number)
-		return errIdNotValid(err, id)
+		return errIDNotValid(err, id)
 	}
 	if id.Number == "" {
-		return errIdNotValid(errors.New("Number is empty"), id)
+		return errIDNotValid(errors.New("Number is empty"), id)
 	}
 	return nil
 }

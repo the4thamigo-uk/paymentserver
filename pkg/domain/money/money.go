@@ -15,7 +15,7 @@ var (
 	zero = Money{}
 )
 
-// Parse returns a valid Money object for the given amount and currency.
+// Parse returns a valid Money object for the given (positive) amount of currency.
 // The amount is validated against the rules of the currency.
 func Parse(amt string, ccy string) (Money, error) {
 	c := gomoney.GetCurrency(ccy)
@@ -43,8 +43,12 @@ func Parse(amt string, ccy string) (Money, error) {
 	if err != nil {
 		return zero, errParseAmount(amt, ccy)
 	}
+	m := gomoney.New(n, ccy)
+	if !m.IsPositive() {
+		return zero, errParseAmount(amt, ccy)
+	}
 	return Money{
-		m: gomoney.New(n, ccy),
+		m: m,
 	}, nil
 }
 

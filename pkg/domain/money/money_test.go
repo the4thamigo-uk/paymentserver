@@ -97,3 +97,15 @@ func TestMoney_ParseCLPMissingFractionError(t *testing.T) {
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Equal(t, zero, m)
 }
+
+func TestMoney_IsNotPositiveError(t *testing.T) {
+	m, err := Parse("0.00", "USD")
+	require.NotNil(t, err.(ErrParseAmount))
+	assert.Equal(t, zero, m)
+}
+
+func TestMoney_IsNegativeError(t *testing.T) {
+	m, err := Parse("-0.01", "USD")
+	require.NotNil(t, err.(ErrParseAmount))
+	assert.Equal(t, zero, m)
+}

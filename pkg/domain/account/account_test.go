@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func newTest() Account {
+func newTestAccount() Account {
 	accType := 0
 	return Account{
 		ID: Identifier{
@@ -21,42 +21,42 @@ func newTest() Account {
 	}
 }
 
-func Test_Validate(t *testing.T) {
-	a := newTest()
+func TestAccount_Validate(t *testing.T) {
+	a := newTestAccount()
 	err := a.Validate()
 	require.Nil(t, err)
 }
 
-func Test_ValidateNilType(t *testing.T) {
-	a := newTest()
+func TestAccount_ValidateNilType(t *testing.T) {
+	a := newTestAccount()
 	a.Type = nil
 	err := a.Validate()
 	require.Nil(t, err)
 }
 
-func Test_ValidateNoNumberError(t *testing.T) {
-	a := newTest()
+func TestAccount_ValidateNoNumberError(t *testing.T) {
+	a := newTestAccount()
 	a.ID.Number = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))
 }
 
-func Test_ValidateNoNameError(t *testing.T) {
-	a := newTest()
+func TestAccount_ValidateNoNameError(t *testing.T) {
+	a := newTestAccount()
 	a.Name = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))
 }
 
-func Test_ValidateNoAddressError(t *testing.T) {
-	a := newTest()
+func TestAccount_ValidateNoAddressError(t *testing.T) {
+	a := newTestAccount()
 	a.Address = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))
 }
 
-func Test_ValidateNoBankIdError(t *testing.T) {
-	a := newTest()
+func TestAccount_ValidateNoBankIdError(t *testing.T) {
+	a := newTestAccount()
 	a.BankID.ID = ""
 	err := a.Validate()
 	require.NotNil(t, err.(ErrNotValid))

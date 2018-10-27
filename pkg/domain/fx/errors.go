@@ -1,4 +1,4 @@
-package charges
+package fx
 
 import (
 	"github.com/pkg/errors"

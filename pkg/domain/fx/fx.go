@@ -1,4 +1,4 @@
-package charges
+package fx
 
 import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"

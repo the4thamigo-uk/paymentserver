@@ -74,6 +74,7 @@ func (m Money) String() string {
 	return f.Format(m.m.Amount())
 }
 
+// Currency returns the currency the money is denominated in
 func (m Money) Currency() currency.Currency {
 	return currency.Currency(m.m.Currency().Code)
 }

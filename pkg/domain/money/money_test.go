@@ -3,6 +3,7 @@ package money
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
 	"testing"
 )
 
@@ -123,4 +124,25 @@ func TestMoney_Amount(t *testing.T) {
 func TestMoney_AmountNegative(t *testing.T) {
 	m := MustParse("123", "CLP")
 	assert.Equal(t, "123", m.Amount().String())
+}
+
+func TestMoney_MultiplyPositive(t *testing.T) {
+	m := MustParse("123.45", "USD")
+	m2, err := m.Multiply(amount.MustParse("1.23456789"))
+	require.Nil(t, err)
+	assert.Equal(t, "152.41", m2.Amount().String())
+}
+
+func TestMoney_MultiplyNegative(t *testing.T) {
+	m := MustParse("123.45", "USD")
+	m2, err := m.Multiply(amount.MustParse("-1.23456789"))
+	require.NotNil(t, err)
+	assert.Nil(t, m2)
+}
+
+func TestMoney_MultiplyZero(t *testing.T) {
+	m := MustParse("123.45", "USD")
+	m2, err := m.Multiply(amount.Amount{})
+	require.NotNil(t, err)
+	assert.Nil(t, m2)
 }

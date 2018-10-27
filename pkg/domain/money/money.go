@@ -68,3 +68,8 @@ func (m Money) Currency() currency.Currency {
 func (m Money) Amount() amount.Amount {
 	return amount.New(m.m.Amount(), m.m.Currency().Fraction)
 }
+
+func (m Money) Multiply(rate amount.Amount) (*Money, error) {
+	a := m.Amount().Multiply(rate).Round(m.m.Currency().Fraction)
+	return New(a, m.Currency().String())
+}

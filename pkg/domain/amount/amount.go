@@ -9,7 +9,7 @@ import (
 
 // Amount is a non-negative fixed-precision number
 type Amount struct {
-	n    int64
+	val  int64
 	prec int
 }
 
@@ -31,14 +31,11 @@ func Parse(amt string) (Amount, error) {
 	}
 	prec := len(parts[1])
 	s := strings.Join(parts, "")
-	n, err := strconv.ParseInt(s, 10, 64)
+	val, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
 		return zero, errAmountNotValid(nil, amt)
 	}
-	return Amount{
-		n:    n,
-		prec: prec,
-	}, nil
+	return New(val, prec), nil
 }
 
 // MustParse returns a valid Amount or otherwise panics
@@ -52,20 +49,22 @@ func MustParse(amt string) Amount {
 }
 
 // New creates an amount interpreting the last 'prec' digits of amt as decimals
-func New(n int64, prec int) Amount {
+func New(val int64, prec int) Amount {
 	if prec < 0 {
 		prec = 0
 	}
 	return Amount{
-		n:    n,
+		val:  val,
 		prec: prec,
 	}
 }
 
+// Value returns the inner integer that holds the unscaled value
 func (a Amount) Value() int64 {
-	return a.n
+	return a.val
 }
 
+// Precision returns the number of decimal places the Value should be scaled to
 func (a Amount) Precision() int {
 	return a.prec
 }
@@ -73,37 +72,32 @@ func (a Amount) Precision() int {
 // String returns the Currency code as a string
 func (a Amount) String() string {
 	if a.prec == 0 {
-		return fmt.Sprintf("%d", a.n)
+		return fmt.Sprintf("%d", a.val)
 	}
 	s := pow10(a.prec)
-	return fmt.Sprintf("%d.%0"+fmt.Sprintf("%d", a.prec)+"d", a.n/s, abs(a.n)%s)
+	return fmt.Sprintf("%d.%0"+fmt.Sprintf("%d", a.prec)+"d", a.val/s, abs(a.val)%s)
 }
 
 // Multiply multiples the Amount with b returning a new Amount
 // with the same precision as a.
 func (a Amount) Multiply(b Amount) Amount {
 	// TODO check for int64 overflow
-	return Amount{
-		n:    (a.n * b.n),
-		prec: a.prec + b.prec,
-	}
+	return New(a.val*b.val, a.prec+b.prec)
 }
 
+// Round rounds the amount to the nearest prec decimal places
 func (a Amount) Round(prec int) Amount {
 	if prec >= a.prec || prec < 0 {
 		return a
 	}
-	n := a.n / pow10(a.prec-prec-1)
-	if a.n > 0 {
-		n += 5
-	} else if a.n < 0 {
-		n -= 5
+	val := a.val / pow10(a.prec-prec-1)
+	if a.val > 0 {
+		val += 5
+	} else if a.val < 0 {
+		val -= 5
 	}
-	n /= 10
-	return Amount{
-		n:    n,
-		prec: prec,
-	}
+	val /= 10
+	return New(val, prec)
 }
 
 // MarshalJSON implements the json.Marshaler interface for Amount

@@ -2,6 +2,7 @@ package charges
 
 import (
 	"github.com/pkg/errors"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 )
 
 // ErrCodeNotValid indicates that the account code is incorrect
@@ -14,7 +15,7 @@ func errCodeNotValid(code string) ErrCodeNotValid {
 // ErrChargeNotFound indicates that the account code is incorrect
 type ErrChargeNotFound error
 
-func errChargeNotFound(side string, ccy string) ErrChargeNotFound {
+func errChargeNotFound(side string, ccy currency.Currency) ErrChargeNotFound {
 	return ErrChargeNotFound(errors.Errorf("There is no '%s' charge for currency '%s'", side, ccy))
 }
 

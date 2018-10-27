@@ -2,6 +2,7 @@ package charges
 
 import (
 	"github.com/stretchr/testify/require"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 	"testing"
 )
@@ -9,7 +10,7 @@ import (
 func newTestCharges() Charges {
 	return Charges{
 		BearerCode: SHAR,
-		Sender: map[string]money.Money{
+		Sender: map[currency.Currency]money.Money{
 			"USD": money.MustParse("234.56", "USD"),
 			"GBP": money.MustParse("123.45", "GBP"),
 		},

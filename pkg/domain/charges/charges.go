@@ -1,19 +1,20 @@
 package charges
 
 import (
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 )
 
 // Charges holds the information about how fees are distributed.
 type Charges struct {
 	BearerCode Code
-	Sender     map[string]money.Money
+	Sender     map[currency.Currency]money.Money
 	Receiver   money.Money
 }
 
 // Validate performs some checks on the charges.
 // TODO : These business rules need checking
-func (c *Charges) Validate(sendCcy string, recvCcy string) error {
+func (c *Charges) Validate(sendCcy currency.Currency, recvCcy currency.Currency) error {
 	// NB: we assume that if we are in different currencies we need
 	// to have sender charges in both currencies
 	// This is just a guess!

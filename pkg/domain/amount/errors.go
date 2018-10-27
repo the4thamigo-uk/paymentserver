@@ -8,5 +8,8 @@ import (
 type ErrAmountNotValid error
 
 func errAmountNotValid(err error, amt string) ErrAmountNotValid {
-	return ErrAmountNotValid(errors.Wrapf(err, "The amount '%s' is not a valid", amt))
+	if err != nil {
+		return ErrAmountNotValid(errors.Wrapf(err, "The amount '%s' is not valid", amt))
+	}
+	return ErrAmountNotValid(errors.Errorf("The amount '%s' is not valid", amt))
 }

@@ -3,7 +3,6 @@ package money
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
 	"testing"
 )
 
@@ -126,23 +125,23 @@ func TestMoney_AmountNegative(t *testing.T) {
 	assert.Equal(t, "123", m.Amount().String())
 }
 
-func TestMoney_MultiplyPositive(t *testing.T) {
-	m := MustParse("123.45", "USD")
-	m2, err := m.Multiply(amount.MustParse("1.23456789"))
-	require.Nil(t, err)
-	assert.Equal(t, "152.41", m2.Amount().String())
+func TestMoney_Equal(t *testing.T) {
+	m1 := MustParse("123.45", "USD")
+	m2 := MustParse("123.45", "USD")
+	assert.True(t, m1.Equals(m2))
+	assert.True(t, m2.Equals(m1))
 }
 
-func TestMoney_MultiplyNegative(t *testing.T) {
-	m := MustParse("123.45", "USD")
-	m2, err := m.Multiply(amount.MustParse("-1.23456789"))
-	require.NotNil(t, err)
-	assert.Nil(t, m2)
+func TestMoney_AmountNotEqual(t *testing.T) {
+	m1 := MustParse("123.45", "USD")
+	m2 := MustParse("123.46", "USD")
+	assert.False(t, m1.Equals(m2))
+	assert.False(t, m2.Equals(m1))
 }
 
-func TestMoney_MultiplyZero(t *testing.T) {
-	m := MustParse("123.45", "USD")
-	m2, err := m.Multiply(amount.Amount{})
-	require.NotNil(t, err)
-	assert.Nil(t, m2)
+func TestMoney_CurrencyNotEqual(t *testing.T) {
+	m1 := MustParse("123.45", "USD")
+	m2 := MustParse("123.45", "GBP")
+	assert.False(t, m1.Equals(m2))
+	assert.False(t, m2.Equals(m1))
 }

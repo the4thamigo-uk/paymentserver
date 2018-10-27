@@ -11,6 +11,7 @@ type Money struct {
 	m *gomoney.Money
 }
 
+// New creates money of the given amount in the given currency
 func New(amt amount.Amount, ccy string) (*Money, error) {
 	c := gomoney.GetCurrency(ccy)
 	if c == nil {
@@ -59,17 +60,23 @@ func (m Money) String() string {
 	return f.Format(m.m.Amount())
 }
 
+// Equals checks if two money instances are equivalent
+func (m Money) Equals(mny Money) bool {
+	b, err := m.m.Equals(mny.m)
+	return b && err == nil
+}
+
 // Currency returns the currency the money is denominated in
 func (m Money) Currency() currency.Currency {
 	return currency.Currency(m.m.Currency().Code)
 }
 
+// Places returns the number of decimal places
+func (m Money) Places() int {
+	return m.m.Currency().Fraction
+}
+
 // Amount returns the amount of the currency
 func (m Money) Amount() amount.Amount {
 	return amount.New(m.m.Amount(), m.m.Currency().Fraction)
-}
-
-func (m Money) Multiply(rate amount.Amount) (*Money, error) {
-	a := m.Amount().Multiply(rate).Round(m.m.Currency().Fraction)
-	return New(a, m.Currency().String())
 }

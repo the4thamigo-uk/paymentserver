@@ -4,6 +4,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/account"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/bank"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/charges"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 	"testing"
@@ -39,12 +41,24 @@ func newDebtor() account.Account {
 	}
 }
 
+func newTestCharges() charges.Charges {
+	return charges.Charges{
+		BearerCode: charges.SHAR,
+		Sender: map[currency.Currency]money.Money{
+			"USD": money.MustParse("234.56", "USD"),
+			"GBP": money.MustParse("123.45", "GBP"),
+		},
+		Receiver: money.MustParse("234.56", "USD"),
+	}
+}
+
 func newPayment() Payment {
 	return Payment{
-		Credit:         money.MustParse("123.45", "USD"),
+		Credit:         money.MustParse("123.45", "GBP"),
 		Beneficiary:    newBeneficiary(),
 		Debtor:         newDebtor(),
 		ProcessingDate: date.MustParse("2000-02-01"),
+		Charges:        newTestCharges(),
 	}
 }
 
@@ -66,4 +80,11 @@ func TestPayment_DebtorError(t *testing.T) {
 	p.Debtor.Name = ""
 	err := p.Validate()
 	require.NotNil(t, err.(ErrDebtorNotValid))
+}
+
+func TestPayment_ChargesError(t *testing.T) {
+	p := newPayment()
+	delete(p.Charges.Sender, "USD")
+	err := p.Validate()
+	require.NotNil(t, err.(ErrChargesNotValid))
 }

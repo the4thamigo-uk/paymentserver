@@ -17,3 +17,10 @@ type ErrDebtorNotValid error
 func errDebtorNotValid(err error) ErrDebtorNotValid {
 	return ErrDebtorNotValid(errors.Wrapf(err, "The debtor is not valid"))
 }
+
+// ErrChargesNotValid indicates that the debtor is incorrect
+type ErrChargesNotValid error
+
+func errChargesNotValid(err error) ErrChargesNotValid {
+	return ErrChargesNotValid(errors.Wrapf(err, "The charges are not valid"))
+}

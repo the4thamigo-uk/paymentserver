@@ -2,6 +2,7 @@ package payment
 
 import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/account"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/charges"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 )
@@ -12,6 +13,7 @@ type Payment struct {
 	Beneficiary    account.Account
 	Debtor         account.Account
 	ProcessingDate date.Date
+	Charges        charges.Charges
 }
 
 // Validate performs some basic checks on the validity of the Payment
@@ -24,6 +26,9 @@ func (p *Payment) Validate() error {
 	if err != nil {
 		return errDebtorNotValid(err)
 	}
-
+	err = p.Charges.Validate("USD", p.Credit.Currency())
+	if err != nil {
+		return errChargesNotValid(err)
+	}
 	return nil
 }

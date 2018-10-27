@@ -2,9 +2,8 @@ package money
 
 import (
 	gomoney "github.com/Rhymond/go-money"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
-	"strconv"
-	"strings"
 )
 
 // Money defines an amount of a specified currency
@@ -12,45 +11,31 @@ type Money struct {
 	m *gomoney.Money
 }
 
-var (
-	zero = Money{}
-)
+func New(amt amount.Amount, ccy string) (*Money, error) {
+	c := gomoney.GetCurrency(ccy)
+	if c == nil {
+		return nil, errInvalidCurrency(ccy)
+	}
+	if amt.Precision() != c.Fraction {
+		return nil, errParseAmount(amt.String(), ccy)
+	}
+	m := gomoney.New(amt.Value(), ccy)
+	if !m.IsPositive() {
+		return nil, errParseAmount(amt.String(), ccy)
+	}
+	return &Money{
+		m: m,
+	}, nil
+}
 
 // Parse returns a valid Money object for the given (positive) amount of currency.
 // The amount is validated against the rules of the currency.
-func Parse(amt string, ccy string) (Money, error) {
-	c := gomoney.GetCurrency(ccy)
-	if c == nil {
-		return zero, errInvalidCurrency(ccy)
-	}
-	parts := strings.Split(amt, ".")
-	if c.Fraction == 0 {
-		if len(parts) != 1 {
-			return zero, errParseAmount(amt, ccy)
-		}
-		parts = append(parts, "")
-	}
-	if len(parts) != 2 {
-		return zero, errParseAmount(amt, ccy)
-	}
-	if len(parts[1]) != c.Fraction {
-		return zero, errParseAmount(amt, ccy)
-	}
-	if len(parts[0]) == 0 {
-		return zero, errParseAmount(amt, ccy)
-	}
-	s := strings.Join(parts, "")
-	n, err := strconv.ParseInt(s, 10, 64)
+func Parse(amt string, ccy string) (*Money, error) {
+	a, err := amount.Parse(amt)
 	if err != nil {
-		return zero, errParseAmount(amt, ccy)
+		return nil, errParseAmount(amt, ccy)
 	}
-	m := gomoney.New(n, ccy)
-	if !m.IsPositive() {
-		return zero, errParseAmount(amt, ccy)
-	}
-	return Money{
-		m: m,
-	}, nil
+	return New(a, ccy)
 }
 
 // MustParse returns a valid Money or otherwise panics
@@ -60,7 +45,7 @@ func MustParse(amt string, ccy string) Money {
 	if err != nil {
 		panic(err)
 	}
-	return m
+	return *m
 }
 
 // String returns the string representation of the Money object
@@ -77,4 +62,9 @@ func (m Money) String() string {
 // Currency returns the currency the money is denominated in
 func (m Money) Currency() currency.Currency {
 	return currency.Currency(m.m.Currency().Code)
+}
+
+// Amount returns the amount of the currency
+func (m Money) Amount() amount.Amount {
+	return amount.New(m.m.Amount(), m.m.Currency().Fraction)
 }

@@ -3,10 +3,12 @@ package payment
 import (
 	"github.com/stretchr/testify/require"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/account"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/bank"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/charges"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/fx"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 	"testing"
 )
@@ -52,13 +54,22 @@ func newTestCharges() charges.Charges {
 	}
 }
 
+func newFx() *fx.Contract {
+	return &fx.Contract{
+		Reference: "FX123",
+		Rate:      amount.MustParse("1.23456789"),
+		Domestic:  money.MustParse("2.89", "USD"),
+	}
+}
+
 func newPayment() Payment {
 	return Payment{
-		Credit:         money.MustParse("123.45", "GBP"),
+		Credit:         money.MustParse("2.34", "GBP"),
 		Beneficiary:    newBeneficiary(),
 		Debtor:         newDebtor(),
 		ProcessingDate: date.MustParse("2000-02-01"),
 		Charges:        newTestCharges(),
+		Fx:             newFx(),
 	}
 }
 
@@ -85,6 +96,20 @@ func TestPayment_DebtorError(t *testing.T) {
 func TestPayment_ChargesError(t *testing.T) {
 	p := newPayment()
 	delete(p.Charges.Sender, "USD")
+	err := p.Validate()
+	require.NotNil(t, err.(ErrChargesNotValid))
+}
+
+func TestPayment_NoFx(t *testing.T) {
+	p := newPayment()
+	p.Fx = nil
+	err := p.Validate()
+	require.Nil(t, err)
+}
+
+func TestPayment_FxError(t *testing.T) {
+	p := newPayment()
+	p.Fx.Reference = ""
 	err := p.Validate()
 	require.NotNil(t, err.(ErrChargesNotValid))
 }

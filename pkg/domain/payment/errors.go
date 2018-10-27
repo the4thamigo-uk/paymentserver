@@ -24,3 +24,10 @@ type ErrChargesNotValid error
 func errChargesNotValid(err error) ErrChargesNotValid {
 	return ErrChargesNotValid(errors.Wrapf(err, "The charges are not valid"))
 }
+
+// ErrFxNotValid indicates that the debtor is incorrect
+type ErrFxNotValid error
+
+func errFxNotValid(err error) ErrFxNotValid {
+	return ErrFxNotValid(errors.Wrapf(err, "The foreign exchange contract is not valid"))
+}

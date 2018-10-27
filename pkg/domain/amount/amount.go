@@ -39,6 +39,7 @@ func (a Amount) String() string {
 	return decimal.Decimal(a).String()
 }
 
+// Multiply multiples the Amount with another returning a new Amount
 func (a Amount) Multiply(b Amount) Amount {
 	return Amount(decimal.Decimal(a).Mul(decimal.Decimal(b)))
 }

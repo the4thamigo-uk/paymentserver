@@ -1,6 +1,8 @@
 package payment
 
 import (
+	"encoding/json"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/account"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
@@ -18,11 +20,12 @@ func newTestBeneficiary() account.Account {
 	accType := 0
 	return account.Account{
 		ID: account.Identifier{
-			Number: "GB82WEST12345698765432",
+			Name:   "J Smith Ltd",
+			Number: "JO71CBJO0000000000001234567890",
+			Type:   &accType,
 			Code:   account.IBAN},
 		Name:    "John Smith",
 		Address: "1 Test Street",
-		Type:    &accType,
 		BankID: bank.Identifier{
 			ID:   "403000",
 			Code: bank.GBDSC},
@@ -30,14 +33,13 @@ func newTestBeneficiary() account.Account {
 }
 
 func newTestDebtor() account.Account {
-	accType := 0
 	return account.Account{
 		ID: account.Identifier{
+			Name:   "J Doe Ltd",
 			Number: "12345678",
 			Code:   account.BBAN},
 		Name:    "John Doe",
 		Address: "2 Test Street",
-		Type:    &accType,
 		BankID: bank.Identifier{
 			ID:   "404000",
 			Code: bank.GBDSC},
@@ -82,6 +84,12 @@ func newTestPayment() Payment {
 		Charges:        newTestCharges(),
 		Fx:             newTestFx(),
 		Sponsor:        newTestSponsor(),
+		ID:             "123",
+		Type:           "Credit",
+		Scheme:         "FPS",
+		SchemeType:     "ImmediatePayment",
+		SchemeSubType:  "InternetBanking",
+		NumericRef:     "123",
 	}
 }
 
@@ -131,4 +139,56 @@ func TestPayment_SponsorError(t *testing.T) {
 	p.Sponsor.Number = ""
 	err := p.Validate()
 	require.NotNil(t, err.(ErrSponsorNotValid))
+}
+
+func TestPayment_IdBlankError(t *testing.T) {
+	p := newTestPayment()
+	p.ID = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrFieldBlank))
+}
+
+func TestPayment_TypeBlankError(t *testing.T) {
+	p := newTestPayment()
+	p.Type = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrFieldBlank))
+}
+
+func TestPayment_SchemeBlankError(t *testing.T) {
+	p := newTestPayment()
+	p.Scheme = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrFieldBlank))
+}
+
+func TestPayment_SchemeTypeBlankError(t *testing.T) {
+	p := newTestPayment()
+	p.SchemeType = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrFieldBlank))
+}
+
+func TestPayment_SchemeSubTypeBlankError(t *testing.T) {
+	p := newTestPayment()
+	p.SchemeSubType = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrFieldBlank))
+}
+
+func TestPayment_NumericRefBlankError(t *testing.T) {
+	p := newTestPayment()
+	p.NumericRef = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrFieldBlank))
+}
+
+func TestPayment_MarshalUnmarshalUSD(t *testing.T) {
+	p1 := newTestPayment()
+	b, err := json.Marshal(p1)
+	require.Nil(t, err)
+	var p2 Payment
+	err = json.Unmarshal(b, &p2)
+	require.Nil(t, err)
+	assert.Equal(t, p2, p1)
 }

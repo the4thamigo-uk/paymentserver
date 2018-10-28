@@ -53,5 +53,19 @@ func (p *Payment) Validate() error {
 	if err != nil {
 		return errSponsorNotValid(err)
 	}
+
+	fields := map[string]interface{}{
+		"id":                p.ID,
+		"type":              p.Type,
+		"scheme":            p.Scheme,
+		"scheme type":       p.SchemeType,
+		"scheme sub-type":   p.SchemeSubType,
+		"numeric reference": p.NumericRef,
+	}
+	for name, value := range fields {
+		if value == "" {
+			return errFieldBlank(name, value)
+		}
+	}
 	return nil
 }

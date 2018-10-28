@@ -38,3 +38,10 @@ type ErrSponsorNotValid error
 func errSponsorNotValid(err error) ErrSponsorNotValid {
 	return ErrSponsorNotValid(errors.Wrapf(err, "The foreign exchange contract is not valid"))
 }
+
+// ErrFieldBlank indicates that the debtor is incorrect
+type ErrFieldBlank error
+
+func errFieldBlank(name string, value interface{}) ErrFieldBlank {
+	return ErrFieldBlank(errors.Errorf("The payment attribute '%s' with value '%v' is not valid", name, value))
+}

@@ -40,6 +40,6 @@ func TestCode_UnmarshalError(t *testing.T) {
 
 func TestCode_UnmarshalErrorNotString(t *testing.T) {
 	var code Code
-	err := json.Unmarshal([]byte("{"), &code)
+	err := json.Unmarshal([]byte(`123`), &code)
 	require.NotNil(t, err.(ErrCodeNotValid))
 }

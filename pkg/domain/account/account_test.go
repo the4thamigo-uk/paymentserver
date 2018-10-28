@@ -7,14 +7,13 @@ import (
 )
 
 func newTestAccount() Account {
-	accType := 0
 	return Account{
 		ID: Identifier{
-			Number: "GB82WEST12345698765432",
+			Name:   "a name",
+			Number: "KW81CBKU0000000000001234560101",
 			Code:   IBAN},
 		Name:    "John Smith",
 		Address: "1 Test Street",
-		Type:    &accType,
 		BankID: bank.Identifier{
 			ID:   "403000",
 			Code: bank.GBDSC},
@@ -23,13 +22,6 @@ func newTestAccount() Account {
 
 func TestAccount_Validate(t *testing.T) {
 	a := newTestAccount()
-	err := a.Validate()
-	require.Nil(t, err)
-}
-
-func TestAccount_ValidateNilType(t *testing.T) {
-	a := newTestAccount()
-	a.Type = nil
 	err := a.Validate()
 	require.Nil(t, err)
 }

@@ -34,6 +34,7 @@ func (c *Code) String() string {
 }
 
 // Parse attempts to parse a Code from a string
+//TODO rename to ParseCode
 func Parse(s string) (*Code, error) {
 	c, ok := codesFromStr[s]
 	if !ok {

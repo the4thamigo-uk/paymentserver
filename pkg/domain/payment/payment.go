@@ -6,6 +6,7 @@ import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/fx"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/sponsor"
 )
 
 // Payment defines a payment from a debtor to a beneficiary
@@ -25,7 +26,7 @@ type Payment struct {
 	NumericRef     string // validate is numeric
 	Reference      string
 	ProcessingDate date.Date
-	//Sponsor //TODO
+	Sponsor        sponsor.Sponsor
 }
 
 // Validate performs some basic checks on the validity of the Payment
@@ -47,6 +48,10 @@ func (p *Payment) Validate() error {
 		if err != nil {
 			return errFxNotValid(err)
 		}
+	}
+	err = p.Sponsor.Validate()
+	if err != nil {
+		return errSponsorNotValid(err)
 	}
 	return nil
 }

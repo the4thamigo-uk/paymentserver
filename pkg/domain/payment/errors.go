@@ -31,3 +31,10 @@ type ErrFxNotValid error
 func errFxNotValid(err error) ErrFxNotValid {
 	return ErrFxNotValid(errors.Wrapf(err, "The foreign exchange contract is not valid"))
 }
+
+// ErrSponsorNotValid indicates that the debtor is incorrect
+type ErrSponsorNotValid error
+
+func errSponsorNotValid(err error) ErrSponsorNotValid {
+	return ErrSponsorNotValid(errors.Wrapf(err, "The foreign exchange contract is not valid"))
+}

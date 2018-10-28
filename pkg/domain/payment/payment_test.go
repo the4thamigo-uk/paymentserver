@@ -10,10 +10,11 @@ import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/fx"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/sponsor"
 	"testing"
 )
 
-func newBeneficiary() account.Account {
+func newTestBeneficiary() account.Account {
 	accType := 0
 	return account.Account{
 		ID: account.Identifier{
@@ -28,7 +29,7 @@ func newBeneficiary() account.Account {
 	}
 }
 
-func newDebtor() account.Account {
+func newTestDebtor() account.Account {
 	accType := 0
 	return account.Account{
 		ID: account.Identifier{
@@ -54,7 +55,7 @@ func newTestCharges() charges.Charges {
 	}
 }
 
-func newFx() *fx.Contract {
+func newTestFx() *fx.Contract {
 	return &fx.Contract{
 		Reference: "FX123",
 		Rate:      amount.MustParse("1.23456789"),
@@ -62,54 +63,72 @@ func newFx() *fx.Contract {
 	}
 }
 
-func newPayment() Payment {
+func newTestSponsor() sponsor.Sponsor {
+	return sponsor.Sponsor{
+		Number: "123456789",
+		BankID: bank.Identifier{
+			ID:   "987654321",
+			Code: bank.GBDSC,
+		},
+	}
+}
+
+func newTestPayment() Payment {
 	return Payment{
 		Credit:         money.MustParse("2.34", "GBP"),
-		Beneficiary:    newBeneficiary(),
-		Debtor:         newDebtor(),
+		Beneficiary:    newTestBeneficiary(),
+		Debtor:         newTestDebtor(),
 		ProcessingDate: date.MustParse("2000-02-01"),
 		Charges:        newTestCharges(),
-		Fx:             newFx(),
+		Fx:             newTestFx(),
+		Sponsor:        newTestSponsor(),
 	}
 }
 
 func TestPayment_Validate(t *testing.T) {
-	p := newPayment()
+	p := newTestPayment()
 	err := p.Validate()
 	require.Nil(t, err)
 }
 
 func TestPayment_BeneficiaryError(t *testing.T) {
-	p := newPayment()
+	p := newTestPayment()
 	p.Beneficiary.Name = ""
 	err := p.Validate()
 	require.NotNil(t, err.(ErrBeneficiaryNotValid))
 }
 
 func TestPayment_DebtorError(t *testing.T) {
-	p := newPayment()
+	p := newTestPayment()
 	p.Debtor.Name = ""
 	err := p.Validate()
 	require.NotNil(t, err.(ErrDebtorNotValid))
 }
 
 func TestPayment_ChargesError(t *testing.T) {
-	p := newPayment()
+	p := newTestPayment()
 	delete(p.Charges.Sender, "USD")
 	err := p.Validate()
 	require.NotNil(t, err.(ErrChargesNotValid))
 }
 
 func TestPayment_NoFx(t *testing.T) {
-	p := newPayment()
+	p := newTestPayment()
 	p.Fx = nil
 	err := p.Validate()
 	require.Nil(t, err)
 }
 
 func TestPayment_FxError(t *testing.T) {
-	p := newPayment()
+	p := newTestPayment()
 	p.Fx.Reference = ""
 	err := p.Validate()
 	require.NotNil(t, err.(ErrChargesNotValid))
+}
+
+func TestPayment_SponsorError(t *testing.T) {
+	p := newTestPayment()
+	p.Sponsor.Number = ""
+	err := p.Validate()
+	require.NotNil(t, err.(ErrSponsorNotValid))
 }

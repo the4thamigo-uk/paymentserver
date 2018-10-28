@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ErrCodeNotValid indicates that the account code is incorrect
+// ErrCodeNotValid indicates that the bank code is incorrect
 type ErrCodeNotValid error
 
 func errCodeNotValid(code string) ErrCodeNotValid {

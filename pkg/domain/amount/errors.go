@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ErrAmountNotValid indicates that the account code is incorrect
+// ErrAmountNotValid indicates that the amount is not valid
 type ErrAmountNotValid error
 
 func errAmountNotValid(err error, amt string) ErrAmountNotValid {

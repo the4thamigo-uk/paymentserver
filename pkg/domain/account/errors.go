@@ -8,7 +8,7 @@ import (
 type ErrCodeNotValid error
 
 func errCodeNotValid(code string) ErrCodeNotValid {
-	return ErrCodeNotValid(errors.Errorf("The account code '%s' is not a valid", code))
+	return ErrCodeNotValid(errors.Errorf("The account code '%s' is not valid", code))
 }
 
 // ErrIDNotValid indicates that the account identifier is incorrect

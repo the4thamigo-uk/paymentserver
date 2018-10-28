@@ -5,14 +5,14 @@ import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
 )
 
-// ErrCodeNotValid indicates that the account code is incorrect
+// ErrCodeNotValid indicates that the bearer code is incorrect
 type ErrCodeNotValid error
 
 func errCodeNotValid(code string) ErrCodeNotValid {
 	return ErrCodeNotValid(errors.Errorf("The bearer code '%s' is not valid", code))
 }
 
-// ErrChargeNotFound indicates that the account code is incorrect
+// ErrChargeNotFound indicates that a sender or receiver is not found for the given currency
 type ErrChargeNotFound error
 
 func errChargeNotFound(side string, ccy currency.Currency) ErrChargeNotFound {

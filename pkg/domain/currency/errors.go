@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ErrCurrencyNotValid indicates that the account code is incorrect
+// ErrCurrencyNotValid indicates that the currency code is incorrect
 type ErrCurrencyNotValid error
 
 func errCurrencyNotValid(code string) ErrCurrencyNotValid {

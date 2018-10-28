@@ -7,9 +7,9 @@ import (
 
 // Charges holds the information about how fees are distributed.
 type Charges struct {
-	BearerCode Code                              `json:"bearer_code"`
-	Sender     map[currency.Currency]money.Money `json:"sender"`
-	Receiver   money.Money                       `json:"receiver"`
+	BearerCode Code          `json:"bearer_code"`
+	Sender     []money.Money `json:"sender"`
+	Receiver   money.Money   `json:"receiver"`
 }
 
 // Validate performs some checks on the charges.
@@ -26,12 +26,12 @@ func (c *Charges) Validate(sendCcy currency.Currency, recvCcy currency.Currency)
 	if numCharges != expCharges {
 		return errNumberCharges(numCharges)
 	}
-	_, ok := c.Sender[sendCcy]
-	if !ok {
+	_, i := c.senderCharge(sendCcy)
+	if i < 0 {
 		return errChargeNotFound("sender", sendCcy)
 	}
-	_, ok = c.Sender[recvCcy]
-	if !ok {
+	_, i = c.senderCharge(recvCcy)
+	if i < 0 {
 		return errChargeNotFound("sender", recvCcy)
 	}
 
@@ -41,4 +41,13 @@ func (c *Charges) Validate(sendCcy currency.Currency, recvCcy currency.Currency)
 		return errChargeNotFound("receiver", recvCcy)
 	}
 	return nil
+}
+
+func (c *Charges) senderCharge(ccy currency.Currency) (money.Money, int) {
+	for i, m := range c.Sender {
+		if m.Currency() == ccy {
+			return m, i
+		}
+	}
+	return money.Money{}, -1
 }

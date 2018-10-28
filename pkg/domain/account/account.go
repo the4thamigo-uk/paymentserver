@@ -7,11 +7,11 @@ import (
 
 // Account defines a bank account
 type Account struct {
-	ID      Identifier
-	Name    string
-	Address string
-	Type    *int
-	BankID  bank.Identifier
+	ID      Identifier      `json:"id"`
+	Name    string          `json:"name"`
+	Address string          `json:"address"`
+	Type    *int            `json:"type"`
+	BankID  bank.Identifier `json:"bank"`
 }
 
 // Validate performs some basic checks on the validity of the Account

@@ -7,9 +7,9 @@ import (
 
 // Charges holds the information about how fees are distributed.
 type Charges struct {
-	BearerCode Code
-	Sender     map[currency.Currency]money.Money
-	Receiver   money.Money
+	BearerCode Code                              `json:"bearer_code"`
+	Sender     map[currency.Currency]money.Money `json:"sender"`
+	Receiver   money.Money                       `json:"receiver"`
 }
 
 // Validate performs some checks on the charges.

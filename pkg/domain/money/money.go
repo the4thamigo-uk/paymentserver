@@ -1,6 +1,7 @@
 package money
 
 import (
+	"encoding/json"
 	gomoney "github.com/Rhymond/go-money"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/currency"
@@ -9,6 +10,11 @@ import (
 // Money defines an amount of a specified currency
 type Money struct {
 	m *gomoney.Money
+}
+
+type money struct {
+	Amount   amount.Amount     `json:"amount"`
+	Currency currency.Currency `json:"currency"`
 }
 
 // New creates money of the given amount in the given currency
@@ -79,4 +85,28 @@ func (m Money) Places() int {
 // Amount returns the amount of the currency
 func (m Money) Amount() amount.Amount {
 	return amount.New(m.m.Amount(), m.m.Currency().Fraction)
+}
+
+// MarshalJSON implements the json.Marshaler interface for Money
+func (m Money) MarshalJSON() ([]byte, error) {
+	m2 := money{
+		Amount:   m.Amount(),
+		Currency: m.Currency(),
+	}
+	return json.Marshal(m2)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Money
+func (m *Money) UnmarshalJSON(data []byte) error {
+	var m2 money
+	err := json.Unmarshal(data, &m2)
+	if err != nil {
+		return err
+	}
+	m3, err := New(m2.Amount, m2.Currency.String())
+	if err != nil {
+		return err
+	}
+	*m = *m3
+	return nil
 }

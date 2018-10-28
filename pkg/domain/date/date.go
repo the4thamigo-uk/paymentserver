@@ -32,8 +32,8 @@ func MustParse(s string) Date {
 }
 
 // String returns the data in the standard format
-func (d *Date) String() string {
-	return time.Time(*d).Format(layout)
+func (d Date) String() string {
+	return time.Time(d).Format(layout)
 }
 
 // MarshalJSON implements the json.Marshaler interface for Date

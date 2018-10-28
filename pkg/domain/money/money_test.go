@@ -1,6 +1,7 @@
 package money
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -9,6 +10,7 @@ import (
 func TestMoney_MustParse(t *testing.T) {
 	m := MustParse("123.45", "GBP")
 	assert.Equal(t, "123.45", m.String())
+	assert.Equal(t, 2, m.Places())
 }
 
 func TestMoney_MustParsePanics(t *testing.T) {
@@ -20,7 +22,7 @@ func TestMoney_MustParsePanics(t *testing.T) {
 	_ = MustParse("", "GBP")
 }
 
-func TestMoney_InvalidCurrencyError(t *testing.T) {
+func TestMoney_InvalidMoneyError(t *testing.T) {
 	m, err := Parse("1.0", "XXX")
 	require.NotNil(t, err.(ErrCurrencyNotFound))
 	assert.Nil(t, m)
@@ -38,38 +40,39 @@ func TestMoney_ParseNonNumberError(t *testing.T) {
 	assert.Nil(t, m)
 }
 
-func TestMoney_ParseGBP(t *testing.T) {
-	m, err := Parse("123.45", "GBP")
+func TestMoney_ParseBHD(t *testing.T) {
+	m, err := Parse("123.456", "BHD")
 	require.Nil(t, err)
-	assert.Equal(t, "123.45", m.String())
+	assert.Equal(t, "123.456", m.String())
+	assert.Equal(t, 3, m.Places())
 }
 
-func TestMoney_ParseGBPNoUnit(t *testing.T) {
-	m, err := Parse(".12", "GBP")
+func TestMoney_ParseBHDNoUnit(t *testing.T) {
+	m, err := Parse(".12", "BHD")
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Nil(t, m)
 }
 
-func TestMoney_ParseGBPNoFractionError(t *testing.T) {
-	m, err := Parse("123.", "GBP")
+func TestMoney_ParseBHDNoFractionError(t *testing.T) {
+	m, err := Parse("123.", "BHD")
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Nil(t, m)
 }
 
-func TestMoney_ParseGBPLongFractionLengthError(t *testing.T) {
-	m, err := Parse("123.456", "GBP")
+func TestMoney_ParseBHDLongFractionLengthError(t *testing.T) {
+	m, err := Parse("123.4567", "BHD")
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Nil(t, m)
 }
 
-func TestMoney_ParseGBPShortFractionLengthError(t *testing.T) {
-	m, err := Parse("123.4", "GBP")
+func TestMoney_ParseBHDShortFractionLengthError(t *testing.T) {
+	m, err := Parse("123.45", "BHD")
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Nil(t, m)
 }
 
-func TestMoney_ParseGBPMissingFractionError(t *testing.T) {
-	m, err := Parse("123", "GBP")
+func TestMoney_ParseBHDMissingFractionError(t *testing.T) {
+	m, err := Parse("123", "BHD")
 	require.NotNil(t, err.(ErrParseAmount))
 	assert.Nil(t, m)
 }
@@ -78,6 +81,7 @@ func TestMoney_ParseCLP(t *testing.T) {
 	m, err := Parse("123", "CLP")
 	require.Nil(t, err)
 	assert.Equal(t, "123", m.String())
+	assert.Equal(t, 0, m.Places())
 }
 
 func TestMoney_ParseCLPNoUnitError(t *testing.T) {
@@ -110,7 +114,7 @@ func TestMoney_IsNegativeError(t *testing.T) {
 	assert.Nil(t, m)
 }
 
-func TestMoney_Currency(t *testing.T) {
+func TestMoney_Money(t *testing.T) {
 	m := MustParse("123.45", "GBP")
 	assert.Equal(t, "GBP", m.Currency().String())
 }
@@ -139,9 +143,41 @@ func TestMoney_AmountNotEqual(t *testing.T) {
 	assert.False(t, m2.Equals(m1))
 }
 
-func TestMoney_CurrencyNotEqual(t *testing.T) {
+func TestMoney_MoneyNotEqual(t *testing.T) {
 	m1 := MustParse("123.45", "USD")
 	m2 := MustParse("123.45", "GBP")
 	assert.False(t, m1.Equals(m2))
 	assert.False(t, m2.Equals(m1))
+}
+
+func TestMoney_MarshalUnmarshalUSD(t *testing.T) {
+	m1 := MustParse("123.45", "USD")
+	b, err := json.Marshal(m1)
+	require.Nil(t, err)
+	var m2 Money
+	err = json.Unmarshal(b, &m2)
+	require.Nil(t, err)
+	assert.True(t, m2.Equals(m1))
+}
+
+func TestMoney_MarshalUnmarshalCLP(t *testing.T) {
+	m1 := MustParse("123", "CLP")
+	b, err := json.Marshal(m1)
+	require.Nil(t, err)
+	var m2 Money
+	err = json.Unmarshal(b, &m2)
+	require.Nil(t, err)
+	assert.True(t, m2.Equals(m1))
+}
+
+func TestMoney_UnmarshalError(t *testing.T) {
+	var c Money
+	err := json.Unmarshal([]byte(`{ "Amount": "123", "Currency": "USD"}`), &c)
+	require.NotNil(t, err)
+}
+
+func TestMoney_UnmarshalErrorNotString(t *testing.T) {
+	var c Money
+	err := json.Unmarshal([]byte(`"NOTVALID"`), &c)
+	require.NotNil(t, err)
 }

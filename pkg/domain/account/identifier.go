@@ -7,8 +7,8 @@ import (
 
 // Identifier defines a bank account number in a format compatible with the Code
 type Identifier struct {
-	Number string
-	Code   Code
+	Number string `json:"number"`
+	Code   Code   `json:"code"`
 }
 
 // Validate returns whether the Identifier is valid.

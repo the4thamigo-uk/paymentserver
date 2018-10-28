@@ -11,22 +11,22 @@ import (
 
 // Payment defines a payment from a debtor to a beneficiary
 type Payment struct {
-	Credit         money.Money
-	Beneficiary    account.Account
-	Debtor         account.Account
-	Charges        charges.Charges
-	Fx             *fx.Contract
-	ID             string
-	Purpose        string
-	Type           string // TODO enum?
-	Scheme         string // TODO are certain scheme combinations valid?
-	SchemeType     string
-	SchemeSubType  string
-	EndToEndRef    string
-	NumericRef     string // validate is numeric
-	Reference      string
-	ProcessingDate date.Date
-	Sponsor        sponsor.Sponsor
+	Credit         money.Money     `json:"credit"`
+	Beneficiary    account.Account `json:"beneficiary"`
+	Debtor         account.Account `json:"debtor"`
+	Charges        charges.Charges `json:"charges"`
+	Fx             *fx.Contract    `json:"fx"`
+	ID             string          `json:"id"`
+	Purpose        string          `json:"purpose"`
+	Type           string          `json:"type"`   // TODO enum?
+	Scheme         string          `json:"scheme"` // TODO are certain scheme combinations valid?
+	SchemeType     string          `json:"scheme_type"`
+	SchemeSubType  string          `json:"scheme_sub_type"`
+	EndToEndRef    string          `json:"end_to_end_ref"`
+	NumericRef     string          `json:"numeric_ref"` // validate is numeric
+	Reference      string          `json:"ref"`
+	ProcessingDate date.Date       `json:"processing_date"`
+	Sponsor        sponsor.Sponsor `json:"sponsor"`
 }
 
 // Validate performs some basic checks on the validity of the Payment

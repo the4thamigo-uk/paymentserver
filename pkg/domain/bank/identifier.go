@@ -7,8 +7,8 @@ import (
 // Identifier is a bank id in a format defined by the bank code
 // TODO: need to implement https://wiki.xmldation.com/Support/ISO20022/General_Rules/Clearing_codes
 type Identifier struct {
-	ID   string
-	Code Code
+	ID   string `json:"id"`
+	Code Code   `json:"code"`
 }
 
 // Validate returns whether the Identifier is valid.

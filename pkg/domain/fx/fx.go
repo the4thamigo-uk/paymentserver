@@ -7,9 +7,9 @@ import (
 
 // Contract specifies the details of the foreign exchange contract.
 type Contract struct {
-	Reference string
-	Rate      amount.Amount // the exchange rate to convert foreign to domestic
-	Domestic  money.Money
+	Reference string        `json:"ref"`
+	Rate      amount.Amount `json:"rate"` // the exchange rate to convert foreign to domestic
+	Domestic  money.Money   `json:"domestic"`
 }
 
 // Validate performs some checks on the Contract.

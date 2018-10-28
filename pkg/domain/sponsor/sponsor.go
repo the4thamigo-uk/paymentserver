@@ -6,8 +6,8 @@ import (
 
 // Sponsor specifies the details of the payment sponsor
 type Sponsor struct {
-	Number string
-	BankID bank.Identifier
+	Number string          `json:"account_number"`
+	BankID bank.Identifier `json:"bank"`
 }
 
 // Validate performs some checks on the Sponsor.

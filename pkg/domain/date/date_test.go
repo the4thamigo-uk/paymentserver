@@ -33,6 +33,12 @@ func TestDate_ParseError(t *testing.T) {
 	assert.Equal(t, zero, d)
 }
 
+func TestDate_ParseBlankError(t *testing.T) {
+	d, err := Parse("")
+	require.NotNil(t, err.(ErrParseDate))
+	assert.Equal(t, zero, d)
+}
+
 func TestDate_Marshal(t *testing.T) {
 	d := MustParse("2000-01-02")
 	b, err := json.Marshal(d)
@@ -47,6 +53,12 @@ func TestDate_Unmarshal(t *testing.T) {
 	assert.Equal(t, "2000-01-02", d.String())
 }
 
+func TestDate_UnmarshalBlankError(t *testing.T) {
+	var d Date
+	err := json.Unmarshal([]byte(`""`), &d)
+	require.NotNil(t, err.(ErrParseDate))
+}
+
 func TestDate_UnmarshalError(t *testing.T) {
 	var d Date
 	err := json.Unmarshal([]byte(`"NOTVALID"`), &d)
@@ -55,6 +67,6 @@ func TestDate_UnmarshalError(t *testing.T) {
 
 func TestDate_UnmarshalErrorNotString(t *testing.T) {
 	var d Date
-	err := json.Unmarshal([]byte("{"), &d)
+	err := json.Unmarshal([]byte("123"), &d)
 	require.NotNil(t, err.(ErrParseDate))
 }

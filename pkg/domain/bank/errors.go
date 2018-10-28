@@ -8,7 +8,7 @@ import (
 type ErrCodeNotValid error
 
 func errCodeNotValid(code string) ErrCodeNotValid {
-	return ErrCodeNotValid(errors.Errorf("The account code '%s' is not a valid", code))
+	return ErrCodeNotValid(errors.Errorf("The bank code '%s' is not a valid", code))
 }
 
 // ErrBankIDNotValid indicates that the bank identifier is incorrect

@@ -74,6 +74,29 @@ func DeletePayment(s store.Store, eid presentation.Entity) (*presentation.Paymen
 	return presentation.FromDomainPayment(dp)
 }
 
+// ListPayments removes the payment from the store and returns the removed payment
+func ListPayments(s store.Store) ([]*presentation.Payment, error) {
+	dps, err := s.LoadAll(newPayment)
+	if err != nil {
+		return nil, err
+	}
+	pps := []*presentation.Payment{}
+	for sid, obj := range dps {
+		dp := *obj.(*payment.Payment)
+		dp.Entity.Version = sid.Version
+		pp, err := presentation.FromDomainPayment(dp)
+		if err != nil {
+			return nil, err
+		}
+		pps = append(pps, pp)
+	}
+	return pps, nil
+}
+
 func toStoreID(eid presentation.Entity) store.ID {
 	return store.NewID(eid.ID, eid.Version)
+}
+
+func newPayment() interface{} {
+	return &payment.Payment{}
 }

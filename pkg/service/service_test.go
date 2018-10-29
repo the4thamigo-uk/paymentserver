@@ -177,3 +177,19 @@ func TestService_UpdateWrongID(t *testing.T) {
 	_, err = UpdatePayment(s, pp1)
 	require.NotNil(t, err)
 }
+
+func TestService_List(t *testing.T) {
+	s := memorystore.New()
+	dp1 := payment.NewDummyPayment()
+	pp1, err := presentation.FromDomainPayment(dp1)
+	require.Nil(t, err)
+	pp2, err := SavePayment(s, pp1)
+	require.Nil(t, err)
+
+	pps, err := ListPayments(s)
+	require.Nil(t, err)
+	assert.Len(t, pps, 1)
+	pp3 := pps[0]
+	assert.Equal(t, 1, pp3.Version)
+	assert.Equal(t, *pp3, *pp2)
+}

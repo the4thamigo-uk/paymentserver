@@ -4,6 +4,7 @@ import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/account"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/charges"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/entity"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/fx"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/sponsor"
@@ -11,6 +12,7 @@ import (
 
 // Payment defines a payment from a debtor to a beneficiary
 type Payment struct {
+	Entity         entity.Entity   `json:"entity"`
 	OrganisationID string          `json:"organisation_id"`
 	Credit         money.Money     `json:"credit"`
 	Beneficiary    account.Account `json:"beneficiary"`
@@ -32,7 +34,11 @@ type Payment struct {
 
 // Validate performs some basic checks on the validity of the Payment
 func (p *Payment) Validate() error {
-	err := p.Beneficiary.Validate()
+	err := p.Entity.Validate()
+	if err != nil {
+		return err
+	}
+	err = p.Beneficiary.Validate()
 	if err != nil {
 		return errBeneficiaryNotValid(err)
 	}

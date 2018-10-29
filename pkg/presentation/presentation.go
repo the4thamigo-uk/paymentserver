@@ -204,6 +204,10 @@ func (p Payment) ToDomainPayment() (*payment.Payment, error) {
 	if err != nil {
 		return nil, err
 	}
+	date, err := date.Parse(a.ProcessingDate)
+	if err != nil {
+		return nil, err
+	}
 	p2 := &payment.Payment{
 		Entity: entity.Entity{
 			ID:      p.ID,
@@ -213,7 +217,7 @@ func (p Payment) ToDomainPayment() (*payment.Payment, error) {
 		Credit:         *credit,
 		Beneficiary:    *beneficiary,
 		Debtor:         *debtor,
-		ProcessingDate: date.MustParse("2000-02-01"),
+		ProcessingDate: date,
 		Charges:        *charges,
 		Fx:             fx,
 		Sponsor:        *sponsor,

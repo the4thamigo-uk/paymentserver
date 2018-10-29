@@ -73,6 +73,7 @@ func newDummySponsor() sponsor.Sponsor {
 // NewDummyPayment creates a payment object used for testing purposes only
 func NewDummyPayment() Payment {
 	return Payment{
+		OrganisationID: "123",
 		Credit:         money.MustParse("2.34", "GBP"),
 		Beneficiary:    newDummyBeneficiary(),
 		Debtor:         newDummyDebtor(),

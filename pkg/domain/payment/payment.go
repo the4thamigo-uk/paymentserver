@@ -11,6 +11,7 @@ import (
 
 // Payment defines a payment from a debtor to a beneficiary
 type Payment struct {
+	OrganisationID string          `json:"organisation_id"`
 	Credit         money.Money     `json:"credit"`
 	Beneficiary    account.Account `json:"beneficiary"`
 	Debtor         account.Account `json:"debtor"`
@@ -56,6 +57,7 @@ func (p *Payment) Validate() error {
 
 	fields := map[string]interface{}{
 		"id":                p.ID,
+		"organisation id":   p.OrganisationID,
 		"type":              p.Type,
 		"scheme":            p.Scheme,
 		"scheme type":       p.SchemeType,

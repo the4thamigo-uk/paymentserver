@@ -28,11 +28,11 @@ func newDummyPayment() *presentation.Payment {
 			ChargesInformation: presentation.Charges{
 				BearerCode: "SHAR",
 				SenderCharges: []presentation.Money{
-					presentation.Money{
+					{
 						Amount:   "5.00",
 						Currency: "GBP",
 					},
-					presentation.Money{
+					{
 						Amount:   "10.00",
 						Currency: "USD",
 					},

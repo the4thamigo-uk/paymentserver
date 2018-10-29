@@ -2,7 +2,7 @@ package memorystore
 
 import (
 	"encoding/json"
-	"github.com/the4thamigo-uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/paymentserver/pkg/store"
 	"sync"
 )
 

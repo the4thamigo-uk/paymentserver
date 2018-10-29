@@ -3,7 +3,7 @@ package memorystore
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/the4thamigo-uk/gameserver/pkg/store"
+	"github.com/the4thamigo-uk/paymentserver/pkg/store"
 	"testing"
 )
 

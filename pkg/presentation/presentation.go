@@ -31,9 +31,9 @@ type Entity struct {
 type Attributes struct {
 	Amount               string  `json:"amount"`
 	BeneficiaryParty     Account `json:"beneficiary_party"`
-	DebtorParty          Account `json:"debtor_party"`
 	ChargesInformation   Charges `json:"charges_information"`
 	Currency             string  `json:"currency"`
+	DebtorParty          Account `json:"debtor_party"`
 	EndToEndReference    string  `json:"end_to_end_reference"`
 	Fx                   *Fx     `json:"fx,omitempty"`
 	NumericReference     string  `json:"numeric_reference"`
@@ -53,7 +53,7 @@ type Account struct {
 	AccountName       string `json:"account_name"`
 	AccountNumber     string `json:"account_number"`
 	AccountNumberCode string `json:"account_number_code"`
-	AccountType       *int   `json:"account_type"`
+	AccountType       *int   `json:"account_type,omitempty"`
 	Address           string `json:"address"`
 	BankID            string `json:"bank_id"`
 	BankIDCode        string `json:"bank_id_code"`

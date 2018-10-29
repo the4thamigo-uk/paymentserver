@@ -89,6 +89,14 @@ type Sponsor struct {
 	BankIDCode    string `json:"bank_id_code"`
 }
 
+// NewEntity creates an entity identifier from the given id and version
+func NewEntity(id string, ver int) Entity {
+	return Entity{
+		ID:      id,
+		Version: ver,
+	}
+}
+
 // FromDomainPayment creates an external representation of the domain object
 func FromDomainPayment(p payment.Payment) (*Payment, error) {
 	err := p.Validate()

@@ -9,16 +9,15 @@ import (
 	"testing"
 )
 
-func TestService_SaveValidationError(t *testing.T) {
+func TestService_Create(t *testing.T) {
 	s := memorystore.New()
 	dp1 := payment.NewDummyPayment()
 	pp1, err := presentation.FromDomainPayment(dp1)
 	require.Nil(t, err)
-
-	// try to save an invalid payment
-	pp1.Attributes.BeneficiaryParty = presentation.Account{}
-	_, err = SavePayment(s, pp1)
-	require.NotNil(t, err)
+	pp2, err := CreatePayment(s, pp1)
+	require.Nil(t, err)
+	assert.NotEqual(t, dp1.Entity.ID, pp2.ID)
+	assert.Equal(t, 1, pp2.Version)
 }
 
 func TestService_InitialSaveVersion0(t *testing.T) {
@@ -47,6 +46,18 @@ func TestService_InitialSaveVersionNonZero(t *testing.T) {
 	assert.Equal(t, *pp1, *pp2)
 }
 
+func TestService_SaveValidationError(t *testing.T) {
+	s := memorystore.New()
+	dp1 := payment.NewDummyPayment()
+	pp1, err := presentation.FromDomainPayment(dp1)
+	require.Nil(t, err)
+
+	// try to save an invalid payment
+	pp1.Attributes.BeneficiaryParty = presentation.Account{}
+	_, err = SavePayment(s, pp1)
+	require.NotNil(t, err)
+}
+
 func TestService_Load(t *testing.T) {
 	s := memorystore.New()
 	dp1 := payment.NewDummyPayment()
@@ -55,7 +66,10 @@ func TestService_Load(t *testing.T) {
 	pp2, err := SavePayment(s, pp1)
 	require.Nil(t, err)
 
-	pp3, err := LoadPayment(s, dp1.Entity.ID.String())
+	eid := presentation.Entity{
+		ID: dp1.Entity.ID,
+	}
+	pp3, err := LoadPayment(s, eid)
 	require.Nil(t, err)
 	assert.Equal(t, 1, pp3.Version)
 	assert.Equal(t, *pp3, *pp2)
@@ -63,7 +77,42 @@ func TestService_Load(t *testing.T) {
 
 func TestService_LoadWrongID(t *testing.T) {
 	s := memorystore.New()
-	_, err := LoadPayment(s, "WRONGID")
+	eid := presentation.Entity{
+		ID: "WRONGID",
+	}
+	_, err := LoadPayment(s, eid)
+	require.NotNil(t, err)
+}
+
+func TestService_Delete(t *testing.T) {
+	s := memorystore.New()
+	dp1 := payment.NewDummyPayment()
+	pp1, err := presentation.FromDomainPayment(dp1)
+	require.Nil(t, err)
+	pp2, err := SavePayment(s, pp1)
+	require.Nil(t, err)
+
+	eid := presentation.Entity{
+		ID: dp1.Entity.ID,
+	}
+	pp3, err := DeletePayment(s, eid)
+	require.Nil(t, err)
+	assert.Equal(t, 1, pp3.Version)
+	assert.Equal(t, *pp3, *pp2)
+
+	_, err = LoadPayment(s, eid)
+	require.NotNil(t, err)
+}
+
+func TestService_DeleteWrongID(t *testing.T) {
+	s := memorystore.New()
+	eid := presentation.Entity{
+		ID: "WRONGID",
+	}
+	_, err := DeletePayment(s, eid)
+	require.NotNil(t, err)
+
+	_, err = LoadPayment(s, eid)
 	require.NotNil(t, err)
 }
 

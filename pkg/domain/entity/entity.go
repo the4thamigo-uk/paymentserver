@@ -2,24 +2,25 @@ package entity
 
 import (
 	"github.com/pkg/errors"
+	"github.com/satori/go.uuid"
 )
 
 // Entity is base type that manages a domain entity's identiy and version
 type Entity struct {
-	ID      ID  `json:"entity_id"`
-	Version int `json:"version"`
+	ID      string `json:"entity_id"`
+	Version int    `json:"version"`
 }
 
 var zero = Entity{}
 
 // New creates a new entity identifier
 func New() (Entity, error) {
-	id, err := newID()
+	id, err := uuid.NewV4()
 	if err != nil {
 		return zero, err
 	}
 	return Entity{
-		ID:      id,
+		ID:      id.String(),
 		Version: 0,
 	}, nil
 }
@@ -36,8 +37,9 @@ func MustNew() Entity {
 
 // Validate checks the consistency of an entity
 func (e *Entity) Validate() error {
-	if e.ID.IsZero() {
-		return errors.New("Entity id is empty")
+	_, err := uuid.FromString(e.ID)
+	if err != nil {
+		return errors.Wrapf(err, "Entity id is empty")
 	}
 	if e.Version < 0 {
 		return errors.New("Entity version is not valid")

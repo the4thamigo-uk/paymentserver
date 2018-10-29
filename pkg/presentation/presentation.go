@@ -15,14 +15,19 @@ import (
 
 // Payment is an external representation of the associated domain object.
 type Payment struct {
-	Type           string     `json:"type"`
-	ID             entity.ID  `json:"id"`
-	Version        int        `json:"version"`
+	Type string `json:"type"`
+	Entity
 	OrganisationID string     `json:"organisation_id"`
 	Attributes     Attributes `json:"attributes"`
 }
 
-// Attributes is an external representation of the associated domain object.
+// Entity is an external representation of the associated domain object
+type Entity struct {
+	ID      string `json:"id"`
+	Version int    `json:"version"`
+}
+
+// Attributes is an external representation of the associated payment domain object.
 type Attributes struct {
 	Amount               string  `json:"amount"`
 	BeneficiaryParty     Account `json:"beneficiary_party"`
@@ -91,9 +96,11 @@ func FromDomainPayment(p payment.Payment) (*Payment, error) {
 		return nil, err
 	}
 	return &Payment{
-		Type:           "Payment",
-		ID:             p.Entity.ID,
-		Version:        p.Entity.Version,
+		Type: "Payment",
+		Entity: Entity{
+			ID:      p.Entity.ID,
+			Version: p.Entity.Version,
+		},
 		OrganisationID: p.OrganisationID,
 		Attributes: Attributes{
 			Amount:               p.Credit.Amount().String(),

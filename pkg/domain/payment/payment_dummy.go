@@ -6,6 +6,7 @@ import (
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/bank"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/charges"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/entity"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/fx"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/sponsor"
@@ -73,6 +74,7 @@ func newDummySponsor() sponsor.Sponsor {
 // NewDummyPayment creates a payment object used for testing purposes only
 func NewDummyPayment() Payment {
 	return Payment{
+		Entity:         entity.MustNew(),
 		OrganisationID: "123",
 		Credit:         money.MustParse("2.34", "GBP"),
 		Beneficiary:    newDummyBeneficiary(),

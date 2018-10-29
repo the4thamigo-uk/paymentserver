@@ -1,12 +1,12 @@
 package presentation
 
 import (
-	"github.com/satori/go.uuid"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/account"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/amount"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/bank"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/charges"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/date"
+	"github.com/the4thamigo-uk/paymentserver/pkg/domain/entity"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/fx"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/money"
 	"github.com/the4thamigo-uk/paymentserver/pkg/domain/payment"
@@ -16,9 +16,9 @@ import (
 // Payment is an external representation of the associated domain object.
 type Payment struct {
 	Type           string     `json:"type"`
-	ID             uuid.UUID  `json:"id"`
+	ID             entity.ID  `json:"id"`
 	Version        int        `json:"version"`
-	OrganisationID uuid.UUID  `json:"organisation_id"`
+	OrganisationID string     `json:"organisation_id"`
 	Attributes     Attributes `json:"attributes"`
 }
 
@@ -85,12 +85,16 @@ type Sponsor struct {
 }
 
 // FromDomainPayment creates an external representation of the domain object
-func FromDomainPayment(id uuid.UUID, version int, orgID uuid.UUID, p payment.Payment) (*Payment, error) {
+func FromDomainPayment(p payment.Payment) (*Payment, error) {
+	err := p.Validate()
+	if err != nil {
+		return nil, err
+	}
 	return &Payment{
 		Type:           "Payment",
-		ID:             id,
-		Version:        version,
-		OrganisationID: orgID,
+		ID:             p.Entity.ID,
+		Version:        p.Entity.Version,
+		OrganisationID: p.OrganisationID,
 		Attributes: Attributes{
 			Amount:               p.Credit.Amount().String(),
 			Currency:             p.Credit.Currency().String(),
@@ -194,6 +198,11 @@ func (p Payment) ToDomainPayment() (*payment.Payment, error) {
 		return nil, err
 	}
 	p2 := &payment.Payment{
+		Entity: entity.Entity{
+			ID:      p.ID,
+			Version: p.Version,
+		},
+		OrganisationID: p.OrganisationID,
 		Credit:         *credit,
 		Beneficiary:    *beneficiary,
 		Debtor:         *debtor,
@@ -201,12 +210,15 @@ func (p Payment) ToDomainPayment() (*payment.Payment, error) {
 		Charges:        *charges,
 		Fx:             fx,
 		Sponsor:        *sponsor,
-		ID:             "123",
-		Type:           "Credit",
-		Scheme:         "FPS",
-		SchemeType:     "ImmediatePayment",
-		SchemeSubType:  "InternetBanking",
-		NumericRef:     "123",
+		ID:             a.PaymentID,
+		Type:           a.PaymentType,
+		Purpose:        a.PaymentPurpose,
+		Scheme:         a.PaymentScheme,
+		SchemeType:     a.SchemePaymentType,
+		SchemeSubType:  a.SchemePaymentSubType,
+		NumericRef:     a.NumericReference,
+		EndToEndRef:    a.EndToEndReference,
+		Reference:      a.Reference,
 	}
 	err = p2.Validate()
 	return p2, err

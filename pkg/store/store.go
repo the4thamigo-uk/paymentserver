@@ -12,6 +12,8 @@ type Store interface {
 	// Load retrieves a given version of the object.
 	// If version <= 0 then the latest version is loaded.
 	Load(id ID, obj interface{}) (ID, error)
+	// Delete retrieves a given version of the object and deletes the version in the store.
+	Delete(id ID, obj interface{}) (ID, error)
 	// LoadAll retrieves the latest version of all the objects in the store.
 	LoadAll(newObj func() interface{}) (map[ID]interface{}, error)
 }

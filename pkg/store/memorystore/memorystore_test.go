@@ -148,3 +148,50 @@ func TestMemoryStore_LoadAll(t *testing.T) {
 	assert.Equal(t, obj1, *objs[id1.WithVersion(2)].(*data))
 	assert.Equal(t, obj2, *objs[id2.WithVersion(3)].(*data))
 }
+
+func TestMemoryStore_DeleteLatest(t *testing.T) {
+	id := store.NewID("123", 0)
+	s := New()
+	obj1 := data{X: 1}
+	id1, err := s.Save(id, obj1)
+	require.Nil(t, err)
+
+	var obj2 data
+	id2, err := s.Delete(id1, &obj2)
+	require.Nil(t, err)
+	assert.Equal(t, obj1, obj2)
+	assert.Equal(t, id2, id1)
+
+	_, err = s.Delete(id1, &obj2)
+	require.NotNil(t, err)
+}
+
+func TestMemoryStore_DeleteVersion(t *testing.T) {
+	id := store.NewID("123", 0)
+	s := New()
+	obj1 := data{X: 1}
+	id1, err := s.Save(id, obj1)
+	require.Nil(t, err)
+
+	var obj2 data
+	id2, err := s.Delete(id1, &obj2)
+	require.Nil(t, err)
+	assert.Equal(t, obj1, obj2)
+	assert.Equal(t, id2, id1)
+
+	_, err = s.Delete(id1, &obj2)
+	require.NotNil(t, err)
+}
+
+func TestMemoryStore_DeleteWrongVersionFails(t *testing.T) {
+	id := store.NewID("123", 0)
+	s := New()
+	obj1 := data{X: 1}
+	_, err := s.Save(id, obj1)
+	require.Nil(t, err)
+
+	var obj2 data
+	id1, err := s.Delete(id.WithVersion(2), &obj2)
+	assert.NotNil(t, err.(store.ErrWrongVersion))
+	assert.Equal(t, id.WithVersion(2), id1)
+}

@@ -9,6 +9,8 @@
 
 This is an example project demonstrating a REST API for a server that allows CRUD operations on payment records. 
 
+The basic design is outlined in [this document](./docs/design.pdf)
+
 The following are the key limitations, but please see the issues list for known
 problems and planned improvements :
 

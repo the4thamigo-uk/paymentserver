@@ -134,7 +134,7 @@ which both return json of the form :
           "href": "/payments/b56df16e-a310-4762-854e-e672bffac14d/1",
           "method": "DELETE"
         },
-        "payment:laod": {
+        "payment:load": {
           "title": "Load payment",
           "href": "/payments/b56df16e-a310-4762-854e-e672bffac14d/1",
           "method": "GET"

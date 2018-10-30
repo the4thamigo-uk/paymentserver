@@ -23,7 +23,7 @@ const (
 	relIndex         = "index"
 	relPaymentList   = "payment:list"
 	relPaymentCreate = "payment:create"
-	relPaymentLoad   = "payment:laod"
+	relPaymentLoad   = "payment:load"
 	relPaymentSave   = "payment:save"
 	relPaymentUpdate = "payment:update"
 	relPaymentDelete = "payment:delete"

@@ -1,1 +1,2 @@
-cmd/paymentserver/paymentserver
+/cmd/paymentserver/paymentserver
+/paymentserver

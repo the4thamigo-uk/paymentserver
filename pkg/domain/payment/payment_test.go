@@ -27,6 +27,15 @@ func TestPayment_DebtorError(t *testing.T) {
 	require.NotNil(t, err.(ErrDebtorNotValid))
 }
 
+func TestPayment_SameAccountError(t *testing.T) {
+	p := NewDummyPayment()
+	p.Debtor.ID = p.Beneficiary.ID
+	p.Debtor.BankID = p.Beneficiary.BankID
+	err := p.Validate()
+	t.Log(err)
+	require.NotNil(t, err.(ErrSameAccount))
+}
+
 func TestPayment_ChargesError(t *testing.T) {
 	p := NewDummyPayment()
 	p.Charges.Sender = nil

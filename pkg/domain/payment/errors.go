@@ -18,6 +18,13 @@ func errDebtorNotValid(err error) ErrDebtorNotValid {
 	return ErrDebtorNotValid(errors.Wrapf(err, "The debtor is not valid"))
 }
 
+// ErrSameAccount indicates that the debtor is incorrect
+type ErrSameAccount error
+
+func errSameAccount() ErrSameAccount {
+	return ErrSameAccount(errors.New("The beneficiary has the same account as the debtor"))
+}
+
 // ErrChargesNotValid indicates that the charges are incorrect
 type ErrChargesNotValid error
 

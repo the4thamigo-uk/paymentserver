@@ -46,6 +46,9 @@ func (p *Payment) Validate() error {
 	if err != nil {
 		return errDebtorNotValid(err)
 	}
+	if p.Beneficiary.ID == p.Debtor.ID && p.Beneficiary.BankID == p.Debtor.BankID {
+		return errSameAccount()
+	}
 	err = p.Charges.Validate("USD", p.Credit.Currency())
 	if err != nil {
 		return errChargesNotValid(err)

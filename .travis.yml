@@ -3,7 +3,6 @@ go:
   - 1.x
 
 install:
-  - go get -t ./...
   - go get -u golang.org/x/lint/golint
   - go get github.com/modocache/gover
   - go get github.com/mattn/goveralls

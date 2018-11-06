@@ -11,14 +11,16 @@ type Entity struct {
 	Version int    `json:"version"`
 }
 
-var zero = Entity{}
+//var zero = Entity{}
 
 // New creates a new entity identifier
 func New() (Entity, error) {
-	id, err := uuid.NewV4()
-	if err != nil {
-		return zero, err
-	}
+	// Forthcoming version of NewV4 will return an error
+	//id, err := uuid.NewV4()
+	//if err != nil {
+	//	return zero, err
+	//}
+	id := uuid.NewV4()
 	return Entity{
 		ID:      id.String(),
 		Version: 0,
